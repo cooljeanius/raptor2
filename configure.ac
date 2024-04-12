@@ -223,7 +223,6 @@ possible_warnings="\
 -Wall \
 -Wc++-compat \
 -Wextra \
--Wpedantic \
 -Wunused \
 \
 -Waggregate-return \
@@ -234,7 +233,6 @@ possible_warnings="\
 -Wdiv-by-zero \
 -Wendif-labels \
 -Werror-implicit-function-declaration \
--Wfloat-equal \
 -Wformat=2 \
 -Wframe-larger-than=4096 \
 -Winit-self \
@@ -244,19 +242,20 @@ possible_warnings="\
 -Wmissing-noreturn \
 -Wmissing-prototypes \
 -Wnested-externs \
+-Wnull-dereference \
+-Wold-style-declaration \
 -Wold-style-definition \
 -Wpacked \
 -Wpointer-arith \
--Wredundant-decls \
 -Wshadow \
--Wsign-compare \
 -Wstrict-overflow \
 -Wstrict-prototypes \
--Wswitch-enum \
+-Wswitch \
 -Wunreachable-code \
 -Wunsafe-loop-optimizations \
 -Wwrite-strings \
 \
+-Wno-long-long \
 -Wno-missing-field-initializers \
 -Wno-system-headers \
 -Wno-unused-parameter \
@@ -264,8 +263,15 @@ possible_warnings="\
 -Wlogical-not-parentheses \
 -Wsizeof-array-argument  \
 -Wbool-compare \
--Wc90-c99-compat \
 -Wc99-c11-compat \
+\
+-Wshift-overflow=2 \
+-Wformat-overflow=2 \
+-Wstringop-overflow=2 \
+-Wvla-larger-than=4096 \
+-Walloc-size-larger-than=8192 \
+-Walloc-zero \
+-fanalyzer \
 "
 
 extra_compiler_cflags=""
