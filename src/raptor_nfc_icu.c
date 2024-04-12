@@ -70,7 +70,7 @@ raptor_nfc_icu_check(const unsigned char* string, size_t len)
   UErrorCode error_code = U_ZERO_ERROR;
   UNormalizationCheckResult res;
   UChar *dest; /* UTF-16 */
-  int32_t dest_capacity = len << 1;
+  int32_t dest_capacity = (int32_t)(len << 1);
   int32_t dest_length;
   int rc = 0;
 
