@@ -496,7 +496,7 @@ raptor_free_uri(raptor_uri *uri)
   }
 
   /* this does not free the uri */
-  if(uri->world->uris_tree)
+  if(uri->world && uri->world->uris_tree)
     raptor_avltree_delete(uri->world->uris_tree, uri);
 
   if(uri->string)
