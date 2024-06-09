@@ -231,7 +231,6 @@ graph: GRAPH_NAME_LEFT_CURLY
       if(turtle_parser->graph_name)
         raptor_free_term(turtle_parser->graph_name);
       turtle_parser->graph_name = raptor_new_term_from_uri(rdf_parser->world, $1);
-      raptor_free_uri($1);
       raptor_parser_start_graph(rdf_parser,
                                 turtle_parser->graph_name->value.uri, 1);
     }
@@ -1299,6 +1298,9 @@ turtle_parser_error(raptor_parser* rdf_parser, void* scanner,
      !turtle_parser->is_end) {
     /* we encountered an error on or around the last byte of the buffer
      * sorting it in the next run aye? */
+#if defined(RAPTOR_DEBUG) && RAPTOR_DEBUG > 1
+    printf("Ignoring error '%s' when near end of buffer\n", msg);
+#endif
     return 0;
   }
   
@@ -2060,12 +2062,15 @@ main(int argc, char *argv[])
   FILE *fh;
   const char *filename;
   size_t nobj;
+  const char *parser_name = "turtle";
   
 #if defined(RAPTOR_DEBUG) && RAPTOR_DEBUG > 2
   turtle_parser_debug = 1;
 #endif
 
   if(argc > 1) {
+    size_t filename_len;;
+
     filename = argv[1];
     fh = fopen(filename, "r");
     if(!fh) {
@@ -2073,6 +2078,12 @@ main(int argc, char *argv[])
               strerror(errno));
       exit(1);
     }
+    filename_len = strlen(filename);
+    if(!strcmp(filename + filename_len - 5, ".trig"))
+      parser_name = "trig";
+    else
+      parser_name = "turtle";
+
   } else {
     filename="<stdin>";
     fh = stdin;
@@ -2092,6 +2103,8 @@ main(int argc, char *argv[])
   if(argc > 1)
     fclose(fh);
 
+  fprintf(stderr, "file '%s' parser '%s'\n", filename, parser_name);
+
   memset(&rdf_parser, 0, sizeof(rdf_parser));
   memset(&turtle_parser, 0, sizeof(turtle_parser));
 
@@ -2107,7 +2120,7 @@ main(int argc, char *argv[])
 
   raptor_parser_set_statement_handler(&rdf_parser, stdout,
                                       turtle_parser_print_statement);
-  raptor_turtle_parse_init(&rdf_parser, "turtle");
+  raptor_turtle_parse_init(&rdf_parser, parser_name);
   
   turtle_parser.error_count = 0;
 
