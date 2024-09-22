@@ -31,6 +31,7 @@
 %{
 #ifdef HAVE_CONFIG_H
 #include <raptor_config.h>
+#undef HAVE_CONFIG_H
 #endif
 
 #include <stdio.h>
@@ -47,6 +48,14 @@
 #include "raptor2.h"
 #include "raptor_internal.h"
 
+/* Set RAPTOR_DEBUG to 3 for super verbose parsing - watching the shift/reduces */
+#if 0
+#undef RAPTOR_DEBUG
+#define RAPTOR_DEBUG 3
+#undef YYDEBUG
+#define YYDEBUG 1
+#endif
+
 #include <turtle_parser.h>
 
 #define YY_NO_UNISTD_H 1
@@ -54,13 +63,6 @@
 #include <turtle_lexer.h>
 
 #include <turtle_common.h>
-
-
-/* Set RAPTOR_DEBUG to 3 for super verbose parsing - watching the shift/reduces */
-#if 0
-#undef RAPTOR_DEBUG
-#define RAPTOR_DEBUG 3
-#endif
 
 
 /* Fail with an debug error message if RAPTOR_DEBUG > 1 */
@@ -231,6 +233,7 @@ graph: GRAPH_NAME_LEFT_CURLY
       if(turtle_parser->graph_name)
         raptor_free_term(turtle_parser->graph_name);
       turtle_parser->graph_name = raptor_new_term_from_uri(rdf_parser->world, $1);
+      raptor_free_uri($1);
       raptor_parser_start_graph(rdf_parser,
                                 turtle_parser->graph_name->value.uri, 1);
     }
@@ -1422,7 +1425,7 @@ turtle_parse(raptor_parser *rdf_parser, const char *string, size_t length)
   turtle_parser->scanner_set = 1;
 
 #if defined(YYDEBUG) && YYDEBUG > 0
-  turtle_lexer_set_debug(1 ,&turtle_parser->scanner);
+  turtle_lexer_set_debug(1, turtle_parser->scanner);
   turtle_parser_debug = 1;
 #endif
 
@@ -1462,7 +1465,7 @@ turtle_push_parse(raptor_parser *rdf_parser,
   turtle_parser->scanner_set = 1;
 
 #if defined(YYDEBUG) && YYDEBUG > 0
-  turtle_lexer_set_debug(1 ,&turtle_parser->scanner);
+  turtle_lexer_set_debug(1, turtle_parser->scanner);
   turtle_parser_debug = 1;
 #endif
 
